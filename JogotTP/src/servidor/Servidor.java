@@ -16,7 +16,7 @@ class Servidor {
       System.exit(1);
     }
 
-    for (int i=0; i<3; i++) {
+    for (int i=0; i<2; i++) {
       Socket clientSocket = null;
       try {
         clientSocket = serverSocket.accept();
@@ -42,11 +42,11 @@ class Servidor {
 
 
 class Servindo extends Thread {
+	
   Socket clientSocket;
-  static PrintStream os[] = new PrintStream[3];
   int nCliente;
- 
   OutputStream out;
+  boolean gameover = false;
   
   static int cont=0;
 
@@ -57,31 +57,21 @@ class Servindo extends Thread {
 
   public void run() {
     try {
-    	out = new DataOutputStream(clientSocket.getOutputStream());
-    	out.write(nCliente);
-    	
-      Scanner is = new Scanner(clientSocket.getInputStream());
-      os[cont++] = new PrintStream(clientSocket.getOutputStream());          
-      
-      String inputLine, outputLine;
-
-      do {
-        inputLine = is.nextLine();
-        for (int i=0; i<cont; i++) {
-          os[i].println(inputLine);
-          os[i].flush();
-        }
-      } while (!inputLine.equals(""));
-
-      for (int i=0; i<cont; i++)
-        os[i].close();
-      is.close();
-      clientSocket.close();
+		out = new DataOutputStream(clientSocket.getOutputStream());
+		out.write(nCliente);
+		out.flush();
+		
+		do{
+			
+		}while(!gameover);
+		         
+		clientSocket.close();
 
     } catch (IOException e) {
       e.printStackTrace();
     } catch (NoSuchElementException e) {
       System.out.println("Conexacao terminada pelo cliente");
     }
+    
   }
-};
+}
