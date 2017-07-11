@@ -1,13 +1,12 @@
 package jogo;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Vector;
 import java.io.*;
 
 class Servidor {
 	
-	static Vector<Data> zombies = new Vector<Data>();
+	static Vector<Zombie> zombies = new Vector<Zombie>();
 	
   public static void main(String[] args) {
 	  

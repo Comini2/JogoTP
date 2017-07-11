@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
@@ -17,10 +16,10 @@ class Servindo extends Thread {
 	static int cont=0;
 	int idCliente;
 	boolean gameover = false;
-	Vector<Data> zombies = null;
+	Vector<Zombie> zombies = null;
   
 
-  Servindo(Socket clientSocket, Vector<Data> zombies) {
+  Servindo(Socket clientSocket, Vector<Zombie> zombies) {
     this.clientSocket = clientSocket;
     this.zombies = zombies;
   }
@@ -31,9 +30,7 @@ class Servindo extends Thread {
 		out[cont++] = new ObjectOutputStream(clientSocket.getOutputStream());
 		idCliente = cont-1;
 		
-		Data data = new Data();
-		
-		data.setId(idCliente);
+		Data data = new Data(new Player(idCliente));
 		
 		out[idCliente].writeObject(data);
 		out[idCliente].flush();
@@ -66,20 +63,20 @@ class Servindo extends Thread {
   }
   
   void moveUnit(Data data) {
-	  Point position = data.getPosition();
+	  Unit unit = data.getUnit();
 	  
 	  switch(data.getDirection()) {
 	  case 0:
-		  data.setPosition(new Point(position.x - data.getSpeed(), position.y));
+		  unit.setPosition(new Point(unit.getPosition().x - unit.getSpeed(), unit.getPosition().y));
 		  break;
 	  case 1:
-		  data.setPosition(new Point(position.x + data.getSpeed(), position.y));
+		  unit.setPosition(new Point(unit.getPosition().x + unit.getSpeed(), unit.getPosition().y));
 		  break;
 	  case 2:
-		  data.setPosition(new Point(position.x, position.y - data.getSpeed()));
+		  unit.setPosition(new Point(unit.getPosition().x, unit.getPosition().y - unit.getSpeed()));
 		  break;
 	  case 3:
-		  data.setPosition(new Point(position.x, position.y + data.getSpeed()));
+		  unit.setPosition(new Point(unit.getPosition().x, unit.getPosition().y + unit.getSpeed()));
 		  break;
 	  }
   }

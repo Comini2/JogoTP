@@ -3,7 +3,6 @@ package jogo;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JFrame;

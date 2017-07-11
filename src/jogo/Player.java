@@ -3,13 +3,10 @@ package jogo;
 import java.awt.Image;
 import java.awt.Point;
 
-public class Player implements java.io.Serializable{
-
+public class Player extends Unit{
+	
 	private static final long serialVersionUID = 1L;
 	
-	int vida;
-	int rotation;
-	public int speed = 5;
 	public int id;
 	Point position;
 	Weapon weapon;
@@ -19,12 +16,11 @@ public class Player implements java.io.Serializable{
 		position = new Point(50, 50);
 	}
 	
-	public int getVida() {
-		return vida;
+	Player(int id){
+		this.id = id;
+		position = new Point(50, 50);
 	}
-	public void setVida(int vida) {
-		this.vida = vida;
-	}
+	
 	public Point getPosition() {
 		return position;
 	}

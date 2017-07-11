@@ -1,15 +1,14 @@
 package jogo;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class Spawner extends Thread {
 	
-	Vector<Data> zombies = null;
+	Vector<Zombie> zombies = null;
 	int round = 2;
 	
-	Spawner(Vector<Data> zombies){
+	Spawner(Vector<Zombie> zombies){
 		this.zombies = zombies;
 	}
 	
@@ -18,12 +17,8 @@ public class Spawner extends Thread {
 			if(zombies.size() <= 0) {
 				round++;
 				for(int i = 0; i<round*round; i++) {
-					Data data = new Data();
-					data.setPlayerData(false);
-					data.setPosition(new Point(15*i, 10));
-					data.setSpeed(5);
-					
-					zombies.add(data);
+					Zombie z = new Zombie(5, new Point(15*i, 10));
+					zombies.add(z);
 				}
 			}
 		}while(true);

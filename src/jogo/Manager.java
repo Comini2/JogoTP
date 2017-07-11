@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class Manager extends Thread implements KeyListener {
@@ -30,18 +29,16 @@ public class Manager extends Thread implements KeyListener {
 			Object obj = in.readObject();
 			
 			if(obj instanceof Data) {
-				Data data = (Data)obj;
-				if(data.getId() == localPlayer.id) {
-					localPlayer.setPosition(data.getPosition());
+				Player player = (Player)((Data)obj).getUnit();
+				if(player.id == localPlayer.id) {
+					localPlayer.setPosition(player.getPosition());
 				}else
-					remotePlayer.setPosition(data.getPosition());
+					remotePlayer.setPosition(player.getPosition());
 			}else {
-				Vector<Data> data = (Vector<Data>)obj;
+				Vector<Zombie> zs = (Vector<Zombie>)obj;
 				zombies.clear();
-				for(Data d: data) {
-					Zombie z = new Zombie(0, d.getSpeed(), d.getPosition());
+				for(Zombie z: zs)
 					zombies.add(z);
-				}
 			}
 			
 		} catch (ClassNotFoundException e) {
@@ -56,7 +53,7 @@ public class Manager extends Thread implements KeyListener {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 			Data data = (Data) in.readObject();
-			localPlayer.id = data.getId();
+			localPlayer.id = ((Player)data.getUnit()).id;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -70,16 +67,12 @@ public class Manager extends Thread implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		Data data = new Data();
-		data.setId(localPlayer.id);
-		data.setPosition(localPlayer.getPosition());
-		data.setPlayerData(true);
+		Data data = new Data(localPlayer);
 		switch(e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 				try {
 					data.setMoving(true);
 					data.setDirection(0);
-					data.setSpeed(localPlayer.speed);
 					out.writeObject(data);
 					out.flush();
 				} catch (IOException e1) {
@@ -90,7 +83,6 @@ public class Manager extends Thread implements KeyListener {
 				try {
 					data.setMoving(true);
 					data.setDirection(1);
-					data.setSpeed(localPlayer.speed);
 					out.writeObject(data);
 					out.flush();
 				} catch (IOException e1) {
@@ -101,7 +93,6 @@ public class Manager extends Thread implements KeyListener {
 				try {
 					data.setMoving(true);
 					data.setDirection(2);
-					data.setSpeed(localPlayer.speed);
 					out.writeObject(data);
 					out.flush();
 				} catch (IOException e1) {
@@ -112,7 +103,6 @@ public class Manager extends Thread implements KeyListener {
 				try {
 					data.setMoving(true);
 					data.setDirection(3);
-					data.setSpeed(localPlayer.speed);
 					out.writeObject(data);
 					out.flush();
 				} catch (IOException e1) {

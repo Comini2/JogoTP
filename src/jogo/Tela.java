@@ -1,7 +1,6 @@
 package jogo;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JPanel;
