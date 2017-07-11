@@ -30,7 +30,7 @@ public class Data implements java.io.Serializable {
 	}
 	
 	public String toString() {
-		return "Position: " + unit.getPosition().toString();
+		return "ID: " + ((Player)unit).id + " Position: " + unit.getPosition().toString();
 	}
 
 	public Unit getUnit() {

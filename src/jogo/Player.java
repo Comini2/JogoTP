@@ -8,12 +8,12 @@ public class Player extends Unit{
 	private static final long serialVersionUID = 1L;
 	
 	public int id;
-	Point position;
 	Weapon weapon;
 	Image playerImage;
 	
 	Player(){
 		position = new Point(50, 50);
+		speed = 5;
 	}
 	
 	Player(int id){
