@@ -1,9 +1,13 @@
 package jogo;
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Vector;
 import java.io.*;
 
 class Servidor {
+	
+	static Vector<Data> zombies = new Vector<Data>();
 	
   public static void main(String[] args) {
 	  
@@ -27,8 +31,12 @@ class Servidor {
 
       System.out.println("Accept Funcionou!");
       
-      new Servindo(clientSocket).start();
+      new Servindo(clientSocket, zombies).start();
     }
+    
+    
+    new Spawner(zombies).start();
+    
       try {
 		serverSocket.close();
 	} catch (IOException e) {

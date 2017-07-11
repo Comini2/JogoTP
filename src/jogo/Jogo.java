@@ -3,6 +3,8 @@ package jogo;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 
@@ -15,13 +17,15 @@ public class Jogo extends JFrame{
 	Manager manager;
 	
 	Player localPlayer = new Player();
+	Player remotePlayer = new Player();
+	Vector<Zombie> zombies = new Vector<Zombie>();
 	
 	
 	Jogo(Socket socket){
 		this.socket = socket;
-		manager = new Manager(socket, localPlayer);
+		manager = new Manager(socket, localPlayer, remotePlayer, zombies);
 		
-		Tela tela = new Tela(localPlayer);
+		Tela tela = new Tela(localPlayer, remotePlayer, zombies);
 		tela.addKeyListener(manager);
 		tela.setFocusable(true);
 		add(tela);

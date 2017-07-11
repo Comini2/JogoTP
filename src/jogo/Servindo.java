@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 
 class Servindo extends Thread {
 	
@@ -15,10 +17,12 @@ class Servindo extends Thread {
 	static int cont=0;
 	int idCliente;
 	boolean gameover = false;
+	Vector<Data> zombies = null;
   
 
-  Servindo(Socket clientSocket) {
+  Servindo(Socket clientSocket, Vector<Data> zombies) {
     this.clientSocket = clientSocket;
+    this.zombies = zombies;
   }
 
   public void run() {
@@ -27,22 +31,27 @@ class Servindo extends Thread {
 		out[cont++] = new ObjectOutputStream(clientSocket.getOutputStream());
 		idCliente = cont-1;
 		
-		Player player = new Player();
-		
-		player.id = idCliente;
 		Data data = new Data();
-		data.setPlayer(player);
+		
+		data.setId(idCliente);
 		
 		out[idCliente].writeObject(data);
 		out[idCliente].flush();
 		do{
+			data = new Data();
 			data = (Data) in.readObject();
+			
 			if(data.isMoving())
-				movePlayer(data);
-			for(int i = 0; i<cont; i++) { 
+				moveUnit(data);
+			
+			for(int i = 0; i<cont; i++) {
 				out[i].writeObject(data);
+				if(zombies.size() > 0) {
+					out[i].writeObject(zombies);
+				}
 				out[i].flush();
 			}
+		
 		}while(data != null);
 		         
 		clientSocket.close();
@@ -56,21 +65,21 @@ class Servindo extends Thread {
 	}
   }
   
-  void movePlayer(Data data) {
-	  Player player = data.getPlayer();
+  void moveUnit(Data data) {
+	  Point position = data.getPosition();
 	  
 	  switch(data.getDirection()) {
 	  case 0:
-		  player.setPosition(new Point(player.getPosition().x - player.speed, player.getPosition().y));
+		  data.setPosition(new Point(position.x - data.getSpeed(), position.y));
 		  break;
 	  case 1:
-		  player.setPosition(new Point(player.getPosition().x + player.speed, player.getPosition().y));
+		  data.setPosition(new Point(position.x + data.getSpeed(), position.y));
 		  break;
 	  case 2:
-		  player.setPosition(new Point(player.getPosition().x, player.getPosition().y - player.speed));
+		  data.setPosition(new Point(position.x, position.y - data.getSpeed()));
 		  break;
 	  case 3:
-		  player.setPosition(new Point(player.getPosition().x - player.speed, player.getPosition().y + player.speed));
+		  data.setPosition(new Point(position.x, position.y + data.getSpeed()));
 		  break;
 	  }
   }
