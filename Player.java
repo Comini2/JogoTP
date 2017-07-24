@@ -4,7 +4,7 @@ class Player{
 	int x;
 	int y;
 	int direction;
-	boolean idle = false;
+	boolean idle = true;
 	boolean shooting = false;
 	private int sprite;
 	private int shootSprite = 0;

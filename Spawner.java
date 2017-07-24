@@ -1,12 +1,12 @@
 import java.awt.Point;
 import java.util.Random;
 
-public class Spawner implements Runnable{
+class Spawner implements Runnable{
 
-	static Player player[] = {new Player(), new Player()};
-	static Zombie zombie[] = new Zombie[1024];	
+	Player player[] = {new Player(), new Player()};
+	Zombie zombie[] = new Zombie[1024];	
 	
-	static int round = 0;
+	int round = 0;
 	private int quantity;
 	private volatile boolean running = true;
 	int screenWidth;
@@ -65,7 +65,7 @@ public class Spawner implements Runnable{
 			int nearest = -1;
 			int minDistance = 99999999;
 			for(int j = 0; j<2; j++){
-				int dist = Math.abs(player[j].x - zombie[i].x) + Math.abs(player[j].y - zombie[j].x);
+				int dist = Math.abs(player[j].x - zombie[i].x) + Math.abs(player[j].y - zombie[i].y);
 				if(dist < minDistance){
 					nearest = j;
 					minDistance = dist; 
@@ -90,6 +90,7 @@ public class Spawner implements Runnable{
 
 	@Override
 	public void run() {
+		nextRound();
 		while(running){
 			updatePositions();
 			try {

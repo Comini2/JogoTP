@@ -4,18 +4,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 
-public class Client implements Runnable, KeyListener{
-	static Socket socket;
-	static DataInputStream in;
-	static DataOutputStream out;
+
+class Client implements Runnable, KeyListener{
+	Socket socket;
+	DataInputStream in;
+	DataOutputStream out;
 	
 	Screen screen;
 	
-	static int id;
+	int id;
 	int remoteId;
 	int px, py;
 	
-	boolean left, right, up, down, shoot, gameOver = false;
+	boolean left, right, up, down, shoot, gameOver = false, waiting = true;
 	
 	Player player[] = {new Player(), new Player()};
 	Zombie zombie[] = new Zombie[1024];
@@ -62,6 +63,11 @@ public class Client implements Runnable, KeyListener{
 		t.start();
 		Thread t2 = new Thread(this);
 		t2.start();
+	}
+
+	public void startGame(){
+		waiting = false;
+		screen.startGame();
 	}
 	
 	public void updatePlayerData(int pid,int healthin, int xin, int yin){
@@ -182,7 +188,7 @@ public class Client implements Runnable, KeyListener{
 		float fireRate = 400f;
 		float shootCounter = 0f;
 		while(true){
-			if(!gameOver){
+			if(!gameOver && !waiting){
 				if(right)
 					px += 3;
 				else if(left)
@@ -211,12 +217,13 @@ public class Client implements Runnable, KeyListener{
 				oldY = player[remoteId].y;
 
 				requestZombieData();
+
+				if(shootCounter > 0)
+					shootCounter -= DELTA_TIME;
 			}
 			screen.repaint();
 			try {
 				Thread.sleep(DELTA_TIME);
-				if(shootCounter > 0)
-					shootCounter -= DELTA_TIME;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -277,6 +284,8 @@ class Input implements Runnable{
 	final int PLAYER_SHOOT_PROTOCOL = 1237;
 	final int ZOMBIE_DATA_PROTOCOL = 1337;
 	final int ZOMBIE_ATTACK_PROTOCOL = 1447;
+	final int WAIT_PROTOCOL = 1577;
+	final int START_PROTOCOL = 1578;
 	final int GAMEOVER_PROTOCOL = 666;
 	
 	Input(DataInputStream in, Client client){
@@ -321,6 +330,8 @@ class Input implements Runnable{
 					int pid = in.readInt();
 					client.gameOver(pid);
 					break;
+				}else if(protocol == START_PROTOCOL){
+					client.startGame();
 				}
 			} catch (IOException e) {
 				in = null;
