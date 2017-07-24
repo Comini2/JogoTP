@@ -52,6 +52,7 @@ class Screen extends JPanel implements MouseListener{
 	int exitSprite = 0;
 
 	int id;
+	int deadId;
 	Player player[];
 	Zombie zombie[];
 	Launcher launcher;
@@ -69,7 +70,7 @@ class Screen extends JPanel implements MouseListener{
 			menuButtonSprite[1] = createResizedCopy(ImageIO.read(new File("img/menu_hoover.png")), 120, 50);
 			exitButtonSprite[0] = createResizedCopy(ImageIO.read(new File("img/exit.png")), 120, 50);
 			exitButtonSprite[1] = createResizedCopy(ImageIO.read(new File("img/exit_hoover.png")), 120, 50);
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("font.ttf")).deriveFont(Font.BOLD, 18);
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("font.ttf")).deriveFont(Font.PLAIN, 18);
 			skull = createResizedCopy(ImageIO.read(new File("img/skull.png")), 25, 25);
 			hearth = createResizedCopy(ImageIO.read(new File("img/soldier/hearth.png")), 25, 25);
 			bloodsplat = createResizedCopy(ImageIO.read(new File("img/zombie/bloodsplat.png")), 60, 60);
@@ -89,8 +90,8 @@ class Screen extends JPanel implements MouseListener{
 			}
 			x = screenWidth/2 - gameOverSprite.getWidth()/2;
 			y = screenHeigth/2 - gameOverSprite.getHeight()/2 - 100;
-			menuButtonRect = new Rectangle(x + 100, y + gameOverSprite.getHeight() - 50, menuButtonSprite[0].getWidth(), menuButtonSprite[0].getHeight());
-			exitButtonRect = new Rectangle(x + gameOverSprite.getWidth() - exitButtonSprite[0].getWidth() - 100, y - 50 + gameOverSprite.getHeight(), exitButtonSprite[0].getWidth(), exitButtonSprite[0].getHeight());
+			menuButtonRect = new Rectangle(x + 100, y + gameOverSprite.getHeight() , menuButtonSprite[0].getWidth(), menuButtonSprite[0].getHeight());
+			exitButtonRect = new Rectangle(x + gameOverSprite.getWidth() - exitButtonSprite[0].getWidth() - 100, y  + gameOverSprite.getHeight(), exitButtonSprite[0].getWidth(), exitButtonSprite[0].getHeight());
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -108,7 +109,8 @@ class Screen extends JPanel implements MouseListener{
 		waiting = false;
 	}
 
-	public void gameOver(){
+	public void gameOver(int id){
+		deadId = id;
 		addMouseListener(this);
 		gameOver = true;
 	}
@@ -216,12 +218,17 @@ class Screen extends JPanel implements MouseListener{
 			g.setColor(Color.BLACK);
 			g.drawImage(menuButtonSprite[menuSprite], menuButtonRect.x, menuButtonRect.y, null);
 			g.drawImage(exitButtonSprite[exitSprite], exitButtonRect.x, exitButtonRect.y, null);
+			g.setFont(font.deriveFont(Font.PLAIN, 24));
+			if(deadId == id)
+				g.drawString("Voce morreu!", 415, 380);
+			else
+				g.drawString("Seu parceiro morreu!", 380, 380);
 		}
 		if(waiting){
 			g.setColor(new Color(0, 0, 0, 110));
 			g.fillRect(0, 0, screenWidth, screenHeigth);
 			g.setColor(Color.BLACK);
-			g.setFont(font.deriveFont(Font.BOLD, 24));
+			g.setFont(font.deriveFont(Font.PLAIN, 24));
 			g.drawString("ESPERANDO O SEGUNDO JOGADOR", 150, screenHeigth - 50);
 		}
 	}	

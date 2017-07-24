@@ -3,6 +3,7 @@ import javax.swing.JFrame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
+import java.awt.Point;
 
 
 class Client implements Runnable, KeyListener{
@@ -33,17 +34,25 @@ class Client implements Runnable, KeyListener{
 	Client(Launcher launcher, int screenWidth, int screenHeight) throws IOException{
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+
+		Point spawns[] = {new Point(screenWidth/2 - 50, screenHeight/2), new Point(screenWidth/2 + 50, screenHeight/2)};
 		for(int i = 0; i<zombie.length; i++)
 			zombie[i] = new Zombie();
 		
 		socket = new Socket("localhost", 7777);
 		in = new DataInputStream(socket.getInputStream());
 		id = in.readInt();
+		remoteId = id == 0 ? 1 : 0;
 		player[id].health = in.readInt();
-		px = in.readInt();
-		py = in.readInt();
+
+		px = spawns[id].x;
+		py = spawns[id].y;
 		player[id].x = px;
 		player[id].y = py;
+
+		player[remoteId].x = spawns[remoteId].x;
+		player[remoteId].y = spawns[remoteId].y;
+
 		out = new DataOutputStream(socket.getOutputStream());
 		screen = new Screen(screenWidth, screenHeight, DELTA_TIME,player, zombie, id, launcher);
 		launcher.getContentPane().removeAll();
@@ -54,7 +63,6 @@ class Client implements Runnable, KeyListener{
 		launcher.setFocusable(true);
 		launcher.repaint();
 
-		remoteId = id == 0 ? 1 : 0;
 		Input input = new Input(in, this);
 		Thread t = new Thread(input);
 		t.start();
@@ -183,7 +191,7 @@ class Client implements Runnable, KeyListener{
 			e.printStackTrace();
 		}
 
-		screen.gameOver();
+		screen.gameOver(pid);
 	}
 
 	@Override

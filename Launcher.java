@@ -27,14 +27,11 @@ class Launcher extends JFrame{
 	}
 
 	public void restartLauncher(){
+		getContentPane().removeAll();
 		container = new LauncherContainer(this, SCREEN_WIDTH, SCREEN_HEIGTH);
 		add(container);
 		pack();
 		setSize(SCREEN_WIDTH, SCREEN_HEIGTH);
-		setLocationRelativeTo(null);
-		setResizable(false);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setVisible(true);
 	}
 }
 

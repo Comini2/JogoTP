@@ -30,9 +30,10 @@ class Server implements Runnable{
 					while(!serving);
 					while(serving){
 						int offUsers = 0;
-						for(int i = 0; i<2; i++)
+						for(int i = 0; i<2; i++){
 							if(user[i] == null)
 								offUsers++;
+						}
 						cont = 2 - offUsers;
 						if(cont == 0){
 							System.out.println("Reiniciando Servidor!");
@@ -99,7 +100,6 @@ class Users implements Runnable{
 	static Player player[];
 	static Zombie zombie[];
 	static boolean gameOver = false;
-	static int cont = 0;
 	volatile boolean serving;
 
 	static final int PLAYER_DATA_PROTOCOL = 1227;
@@ -113,8 +113,6 @@ class Users implements Runnable{
 
 	static final int SCREEN_WIDTH = 1024;
 	static final int SCREEN_HEIGHT = 800;
-
-	Point spawns[] = {new Point(SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/2), new Point(SCREEN_WIDTH/2 + 50, SCREEN_HEIGHT/2)};
 	
 	Users(Socket socket, Users[] user, int id, Spawner spawner){
 		try{
@@ -131,7 +129,6 @@ class Users implements Runnable{
 		this.spawner = spawner;
 		player = spawner.player;
 		zombie = spawner.zombie;
-		cont++;
 	}
 
 	public void startService(){
@@ -143,22 +140,18 @@ class Users implements Runnable{
 		try {
 			out.writeInt(id);
 			out.writeInt(INITIAL_HEALTH);
-			player[id].x = spawns[id].x;
-			player[id].y = spawns[id].y;
-			out.writeInt(spawns[id].x);
-			out.writeInt(spawns[id].y);
 
 			while(!serving);
 			
 			System.out.println("Servindo!");
 			
 			out.writeInt(START_PROTOCOL);
-			System.out.println("Start");
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Usuario " + id + "se desconectou antes de começar o jogo.");
+			serving = false;
 		}
 
-		while(!gameOver){
+		while(!gameOver && serving){
 
 			try {
 				protocol = in.readInt();
@@ -204,6 +197,7 @@ class Users implements Runnable{
 				break;
 			}
 		}
+		gameOver = false;
 		serving = false;
 		this.user[id] = null;
 	}

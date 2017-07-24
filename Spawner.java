@@ -41,12 +41,12 @@ class Spawner implements Runnable{
 			int y = screenHeight/2 + (int)(spawnPoint.y*Math.sin(Math.toRadians(angle*i)));
 			zombie[i].x = x;
 			zombie[i].y = y;
-			zombie[i].health = 10 + 5*round;
+			zombie[i].health = 10 + 2*round;
 		}
 	}
 	
 	public int getQuantity(){
-		return (int) Math.pow(2, round);
+		return 2*round;
 	}
 
 	public int getRound(){
