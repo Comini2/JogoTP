@@ -128,7 +128,6 @@ class Screen extends JPanel implements MouseListener{
 	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		g.setFont(font);
 		g.setColor(Color.BLACK);
 		for(int i = 0; i<BACKGROUND_SCALE; i++)
 			for(int j = 0; j<BACKGROUND_SCALE; j++)
@@ -143,7 +142,9 @@ class Screen extends JPanel implements MouseListener{
 			if(b.alpha <= 0)
 				i.remove();
 		}
+		g.setFont(font).deriveFont(Font.PLAIN, 24);
 		g.drawString("ROUND " + Integer.toString(round), 50, 50);
+		g.setFont(font);
 		g.drawImage(hearth, 50, screenHeigth - 100, null);
 		g.drawImage(skull, 50, screenHeigth - 70, null);
 		g.drawString(Integer.toString(player[id].health), 85, screenHeigth - 82);
@@ -229,7 +230,7 @@ class Screen extends JPanel implements MouseListener{
 			g.fillRect(0, 0, screenWidth, screenHeigth);
 			g.setColor(Color.BLACK);
 			g.setFont(font.deriveFont(Font.PLAIN, 24));
-			g.drawString("ESPERANDO O SEGUNDO JOGADOR", 150, screenHeigth - 50);
+			g.drawString("ESPERANDO O SEGUNDO JOGADOR...", 150, screenHeigth - 50);
 		}
 	}	
 	BufferedImage createResizedCopy(Image originalImage, int scaledWidth, int scaledHeight){
