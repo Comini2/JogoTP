@@ -142,7 +142,7 @@ class Screen extends JPanel implements MouseListener{
 			if(b.alpha <= 0)
 				i.remove();
 		}
-		g.setFont(font).deriveFont(Font.PLAIN, 24);
+		g.setFont(font.deriveFont(Font.PLAIN, 24));
 		g.drawString("ROUND " + Integer.toString(round), 50, 50);
 		g.setFont(font);
 		g.drawImage(hearth, 50, screenHeigth - 100, null);
