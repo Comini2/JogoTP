@@ -30,32 +30,29 @@ class Client implements Runnable, KeyListener{
 	int screenHeight;
 	final long DELTA_TIME = 1000/60;
 		
-	Client(JFrame launcher, int screenWidth, int screenHeight){
+	Client(JFrame launcher, int screenWidth, int screenHeight) throws IOException{
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 		for(int i = 0; i<zombie.length; i++)
 			zombie[i] = new Zombie();
-		try{
-			socket = new Socket("localhost", 7777);
-			in = new DataInputStream(socket.getInputStream());
-			id = in.readInt();
-			player[id].health = in.readInt();
-			px = in.readInt();
-			py = in.readInt();
-			player[id].x = px;
-			player[id].y = py;
-			out = new DataOutputStream(socket.getOutputStream());
-
-			screen = new Screen(screenWidth, screenHeight, DELTA_TIME,player, zombie, id);
-			launcher.add(screen);
-			launcher.pack();
-			launcher.setSize(screenWidth, screenHeight);
-			launcher.addKeyListener(this);
-			launcher.setFocusable(true);
-			launcher.repaint();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		
+		socket = new Socket("localhost", 7777);
+		in = new DataInputStream(socket.getInputStream());
+		id = in.readInt();
+		player[id].health = in.readInt();
+		px = in.readInt();
+		py = in.readInt();
+		player[id].x = px;
+		player[id].y = py;
+		out = new DataOutputStream(socket.getOutputStream());
+		screen = new Screen(screenWidth, screenHeight, DELTA_TIME,player, zombie, id);
+		launcher.getContentPane().removeAll();
+		launcher.add(screen);
+		launcher.pack();
+		launcher.setSize(screenWidth, screenHeight);
+		launcher.addKeyListener(this);
+		launcher.setFocusable(true);
+		launcher.repaint();
 
 		remoteId = id == 0 ? 1 : 0;
 		Input input = new Input(in, this);

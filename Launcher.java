@@ -40,6 +40,8 @@ class LauncherContainer extends JPanel implements MouseListener{
 	int screenHeigth;
 	final int BACKGROUND_SCALE = 2;
 	JFrame launcher;
+	boolean error;
+	Font font;
 
 	LauncherContainer(JFrame launcher, int screenWidth, int screenHeigth){
 		this.launcher = launcher;
@@ -48,12 +50,15 @@ class LauncherContainer extends JPanel implements MouseListener{
 		exitButtonRect = new Rectangle(screenWidth/2 - 100, 400, 200, 50);
 		startButtonRect = new Rectangle(screenWidth/2 - 100, 330, 200, 50);
 		try{
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("font.ttf")).deriveFont(Font.BOLD, 24);
 			backgroundImage = createResizedCopy(ImageIO.read(new File("img/env/background.png")), screenWidth/BACKGROUND_SCALE, screenHeigth/BACKGROUND_SCALE);
 			startButtonSprite[0] = createResizedCopy(ImageIO.read(new File("img/start.png")), 200, 50);
 			startButtonSprite[1] = createResizedCopy(ImageIO.read(new File("img/start_hoover.png")), 200, 50);
 			exitButtonSprite[0] = createResizedCopy(ImageIO.read(new File("img/exit.png")), 200, 50);
 			exitButtonSprite[1] = createResizedCopy(ImageIO.read(new File("img/exit_hoover.png")), 200, 50);
 		}catch(IOException e){
+			e.printStackTrace();
+		}catch(FontFormatException e){
 			e.printStackTrace();
 		}
 		addMouseListener(this);
@@ -67,6 +72,12 @@ class LauncherContainer extends JPanel implements MouseListener{
 		g.fillRect(0, 0, screenWidth, screenHeigth);
 		g.drawImage(startButtonSprite[startSprite], startButtonRect.x, startButtonRect.y, null);
 		g.drawImage(exitButtonSprite[exitSprite], exitButtonRect.x, exitButtonRect.y, null);
+
+		if(error == true){
+			g.setColor(Color.RED);
+			g.setFont(font);
+			g.drawString("ERRO AO CONECTAR AO SERVIDOR", 220, screenHeigth - 50);
+		}
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -89,8 +100,12 @@ class LauncherContainer extends JPanel implements MouseListener{
     		repaint();
     	}
     	if(startButtonRect.contains(e.getPoint())){
-    		launcher.getContentPane().removeAll();
-    		new Client(launcher, screenWidth, screenHeigth);
+    		try{
+    			new Client(launcher, screenWidth, screenHeigth);
+    		}catch(IOException exc){
+    			error = true;
+    		}
+
     	}else if(exitButtonRect.contains(e.getPoint())){
     		System.exit(0);
     	}
