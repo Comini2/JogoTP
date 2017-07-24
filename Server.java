@@ -102,7 +102,6 @@ class Users implements Runnable{
 	static int cont = 0;
 	volatile boolean serving;
 
-	static final int START = 1117;
 	static final int PLAYER_DATA_PROTOCOL = 1227;
 	static final int PLAYER_SHOOT_PROTOCOL = 1237;
 	static final int ZOMBIE_DATA_PROTOCOL = 1337;

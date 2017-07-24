@@ -54,14 +54,16 @@ class Screen extends JPanel implements MouseListener{
 	int id;
 	Player player[];
 	Zombie zombie[];
+	Launcher launcher;
 	
-	Screen(int screenWidth, int screenHeigth,float deltaTime, Player player[], Zombie zombie[], int id){
+	Screen(int screenWidth, int screenHeigth,float deltaTime, Player player[], Zombie zombie[], int id, Launcher launcher){
 		this.id = id;
 		this.player = player;
 		this.zombie = zombie;
 		this.screenWidth = screenWidth;
 		this.screenHeigth = screenHeigth;
 		this.deltaTime = deltaTime;
+		this.launcher = launcher;
 		try {
 			menuButtonSprite[0] = createResizedCopy(ImageIO.read(new File("img/menu.png")), 120, 50);
 			menuButtonSprite[1] = createResizedCopy(ImageIO.read(new File("img/menu_hoover.png")), 120, 50);
@@ -203,7 +205,7 @@ class Screen extends JPanel implements MouseListener{
 		if(soldierCounter <= 0)
 			soldierCounter = deltaTime*2;
 		if(zombieCounter <= 0)
-			zombieCounter = deltaTime*3;
+			zombieCounter = deltaTime*2;
 
 		soldierCounter -= deltaTime;
 		zombieCounter -= deltaTime;
@@ -251,22 +253,26 @@ class Screen extends JPanel implements MouseListener{
 	    }
 	}	
     public void mousePressed(MouseEvent e) {
-    	if(menuButtonRect.contains(e.getPoint())){
-    		menuSprite = 1;
-    	}else if(exitButtonRect.contains(e.getPoint())){
-    		exitSprite = 1;
-    	}
+    	if(gameOver){
+	    	if(menuButtonRect.contains(e.getPoint())){
+	    		menuSprite = 1;
+	    	}else if(exitButtonRect.contains(e.getPoint())){
+	    		exitSprite = 1;
+	    	}
+	    }
     }
 
     public void mouseReleased(MouseEvent e) {
-    	if(menuSprite == 1)
-    		menuSprite = 0;
-    	if(exitSprite == 1)
-    		exitSprite = 0;
-    	if(menuButtonRect.contains(e.getPoint())){
-
-    	}else if(exitButtonRect.contains(e.getPoint())){
-    		System.exit(0);
+    	if(gameOver){
+	    	if(menuSprite == 1)
+	    		menuSprite = 0;
+	    	if(exitSprite == 1)
+	    		exitSprite = 0;
+	    	if(menuButtonRect.contains(e.getPoint())){
+	    		launcher.restartLauncher();
+	    	}else if(exitButtonRect.contains(e.getPoint())){
+	    		System.exit(0);
+	    	}
     	}
     }
 

@@ -30,7 +30,7 @@ class Client implements Runnable, KeyListener{
 	int screenHeight;
 	final long DELTA_TIME = 1000/60;
 		
-	Client(JFrame launcher, int screenWidth, int screenHeight) throws IOException{
+	Client(Launcher launcher, int screenWidth, int screenHeight) throws IOException{
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
 		for(int i = 0; i<zombie.length; i++)
@@ -45,7 +45,7 @@ class Client implements Runnable, KeyListener{
 		player[id].x = px;
 		player[id].y = py;
 		out = new DataOutputStream(socket.getOutputStream());
-		screen = new Screen(screenWidth, screenHeight, DELTA_TIME,player, zombie, id);
+		screen = new Screen(screenWidth, screenHeight, DELTA_TIME,player, zombie, id, launcher);
 		launcher.getContentPane().removeAll();
 		launcher.add(screen);
 		launcher.pack();
@@ -175,6 +175,14 @@ class Client implements Runnable, KeyListener{
 
 	public void gameOver(int pid){
 		gameOver = true;
+		try{
+			out.close();
+			in.close();
+			socket.close();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+
 		screen.gameOver();
 	}
 
@@ -231,16 +239,20 @@ class Client implements Runnable, KeyListener{
 	public void keyPressed(KeyEvent e) {
 		switch(e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
-				left = true;
+				if(px > 0)
+					left = true;
 				break;
 			case KeyEvent.VK_RIGHT:
-				right = true;
+				if(px < screenWidth)
+					right = true;
 				break;
 			case KeyEvent.VK_UP:
-				up = true;
+				if(py > 0)
+					up = true;
 				break;
 			case KeyEvent.VK_DOWN:
-				down = true;
+				if(py < screenHeight)
+					down = true;
 				break;
 			case KeyEvent.VK_SPACE:
 				shoot = true;
