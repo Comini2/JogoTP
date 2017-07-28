@@ -129,10 +129,10 @@ class Screen extends JPanel implements MouseListener{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		g.setColor(Color.BLACK);
+		Graphics2D g2d = (Graphics2D)g;
 		for(int i = 0; i<BACKGROUND_SCALE; i++)
 			for(int j = 0; j<BACKGROUND_SCALE; j++)
 				g.drawImage(background, screenWidth*i/BACKGROUND_SCALE, screenHeigth*j/BACKGROUND_SCALE, null);
-		Graphics2D g2d = (Graphics2D)g;
 		for(Iterator<Bloodsplat> i = splats.iterator(); i.hasNext();){
 			Bloodsplat b = i.next();
 			BufferedImage img = deepCopy(bloodsplat);
