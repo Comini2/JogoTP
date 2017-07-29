@@ -10,6 +10,7 @@ class Animation{
 	public int frameWidth;
 	private int spriteCounter = 0;
 	public double delta = 0f;
+	private boolean playing;
 
 	public Animation(BufferedImage spritesheet, int frames,int frameWidth , int frameHeight, float speed){
 		this.frames = frames;
@@ -30,14 +31,33 @@ class Animation{
 		frames = sprites.length;
 	}
 
+	public Animation(BufferedImage sprites[]){
+		this(sprites, 1f);
+	}
+
 	public BufferedImage getCurrentSprite(){
 		return sprites[spriteCounter];
 	}
 
 	public void nextSprite(){
 		spriteCounter++;
-		if(spriteCounter >= frames)
+		if(spriteCounter >= frames){
+			playing = false;
 			spriteCounter = 0;
+		}
+	}
+
+	public void stop(){
+		playing = false;
+		spriteCounter = 0;
+		delta = 0f;
+	}
+
+	public void play(){
+		playing = true;
+	}
+	public boolean isPlaying(){
+		return playing;
 	}
 
 	//TODO: ADICIONAR CROSS FADE ENTRE ANIMAÇÕES.
