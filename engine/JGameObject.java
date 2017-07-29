@@ -13,7 +13,7 @@ public class JGameObject extends JComponent {
   public Animation currAnim;
   public Point position;
   public Dimension size;
-  public int rotation = 0;
+  public float rotation = 0f;
   private AffineTransform at;
 
 
@@ -55,7 +55,7 @@ public class JGameObject extends JComponent {
 	at.translate(size.width/2, size.height/2);
 	at.rotate(rotation);
 	at.translate(-size.width/2, -size.height/2);
-	g2d.drawImage(currAnim.getNextSprite(), at, null);
+	g2d.drawImage(currAnim.getCurrentSprite(), at, null);
   }
 
   //TODO: IMPLEMENTAR A CLASSE E INTERFACE DE SCRIPT

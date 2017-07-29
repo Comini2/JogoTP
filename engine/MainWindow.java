@@ -15,7 +15,7 @@ class MainWindow extends JFrame{
 			for(int i = 0; i<20; i++){
 				sprites[i] = ImageIO.read(new File(("../img/soldier/idle/survivor-idle_handgun_" + i +".png")));
 			}
-			anim = new Animation(sprites, 1);
+			anim = new Animation(sprites, 0.15f);
 		}catch(IOException e){
 			e.printStackTrace();
 		}

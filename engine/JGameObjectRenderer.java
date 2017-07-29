@@ -10,17 +10,27 @@ class JGameObjectRenderer extends Thread{
 		gOs.add(gO);
 	}
 
-	//TODO: IMPLEMENTAR VELOCIDADES DIFERENTES PARA AS ANIMAÇÕES
+	long lastTime = System.nanoTime();
+	final double clock = 1000000000.0 / 60.0;
+	double delta = 0;
 
 	public void run(){
 		while(true){
-			try{
-				sleep(1000/30);
-			}catch(InterruptedException e){
-				e.printStackTrace();
-			}
+			long now = System.nanoTime();
+			delta += (now - lastTime) / clock;
 			for(JGameObject gO: gOs)
-				drawGo(gO);
+	        	gO.currAnim.delta +=(now - lastTime) / clock*gO.currAnim.speed;
+			lastTime = now;
+			for(JGameObject gO: gOs)
+	        	while(gO.currAnim.delta >= 1){
+	        		gO.currAnim.delta--;
+	        		gO.currAnim.nextSprite();
+	        	}
+	        while(delta >= 1){
+	        	delta--;
+	        	for(JGameObject gO: gOs)
+	        		drawGo(gO);
+	        }
 		}
 	}
 
