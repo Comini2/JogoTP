@@ -1,7 +1,8 @@
 abstract class SimpleConduct{
 
+
 	protected SimpleConduct(){
-		UpdateThread.addConduct(this);
+		UpdateThread.addSimpleConduct(this);
 	}
 
 	public abstract void start();

@@ -1,16 +1,18 @@
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.Dimension;
 
 class Animation{
 
 	private BufferedImage sprites[];
 	private int frames;
 	public float speed;
-	public int frameHeight;
-	public int frameWidth;
+	private int frameHeight;
+	private int frameWidth;
 	private int spriteCounter = 0;
 	public double delta = 0f;
 	private boolean playing;
+	public Dimension size;
 
 	public Animation(BufferedImage spritesheet, int frames,int frameWidth , int frameHeight, float speed){
 		this.frames = frames;
@@ -18,6 +20,8 @@ class Animation{
 		this.frameHeight = frameHeight;
 		this.frameWidth = frameWidth;
 		sprites = new BufferedImage[frames];
+		size.width = frameWidth;
+		size.height = frameHeight;
 
 		for(int i = 0; i<frames; i++)
 			sprites[i] = spritesheet.getSubimage(frameWidth*i, 0, frameWidth, frameHeight);

@@ -1,72 +1,62 @@
+import java.awt.geom.*;
 import java.awt.Graphics2D;
-import java.awt.Graphics;
-import java.awt.geom.AffineTransform;
-import java.awt.Point;
 import java.awt.Dimension;
-import javax.swing.JComponent;
-import java.util.HashMap;
+import java.awt.Shape;
+import java.util.LinkedList;
 
 
-public class JGameObject extends JComponent {
+public class JGameObject {
 
-  private HashMap<String, Animation> animations = new HashMap<>();
-  public Animation currAnim = null;
-  public Point position;
-  public Dimension size;
-  public float rotation = 0f;
+  //private LinkedList<Conduct> components = new LinkedList<>();
+
   private AffineTransform at;
+  private Shape shape;
+  private Rectangle2D bounds;
+  protected Point2D position;
+  public float rotation = 0f;
+  private Camera mainCamera = Screen.mainCamera;
 
-
-  public JGameObject(Point position, Dimension size){
-  	setDoubleBuffered(true);
-  	this.position = position;
-  	this.size = size;
-  	this.setBounds();
-  	JGameObjectRenderer.addGo(this);
+  public JGameObject(Shape shape){
+    this.shape = shape;
+    bounds = shape.getBounds2D();
+    position = new Point2D.Double(bounds.getX() + mainCamera.getXOffset(), bounds.getY() + mainCamera.getYOffset());
+    Screen.addGO(this);
   }
-  public JGameObject(Point position){
-  	this(position, new Dimension(50, 50));
+
+  public JGameObject(Point2D position){
+  	this.position = new Point2D.Double(mainCamera.getXOffset() + position.getX(), mainCamera.getYOffset() + position.getY());
+    Screen.addGO(this);
+  }
+
+  public JGameObject(float x, float y){
+    this(new Point2D.Double(x, y));
   }
 
   public JGameObject(){
-    this(new Point(0, 0));
+    this(new Point2D.Double(0, 0));
   }
 
-  protected void addAnimation(Animation animation, String animationName){
-  	animations.put(animationName, animation);
-  }
-
-  private void setBounds(){
-  	super.setBounds((int)position.x - size.width/2, (int)position.y - size.height/2,size.width, size.height);
-  }
-
-  protected void playAnimation(String animationName, float speed){
-      currAnim = animations.get(animationName);
-      currAnim.speed = speed;
-  		size = new Dimension(currAnim.frameWidth, currAnim.frameHeight);
-  		this.setBounds();
-  }
-
-  protected void playAnimation(String animationName){
-      currAnim = animations.get(animationName);
-      size = new Dimension(currAnim.frameWidth, currAnim.frameHeight);
-      this.setBounds();
-  }
-
-  public void paintComponent(Graphics g){
-  	super.paintComponent(g);
-    if(currAnim != null){
-    	Graphics2D g2d = (Graphics2D)g;
-    	at = new AffineTransform();
-    	at.translate(size.width/2, size.height/2);
-    	at.rotate(Math.toRadians(rotation));
-    	at.translate(-size.width/2, -size.height/2);
-    	g2d.drawImage(currAnim.getCurrentSprite(), at, null);
+  public void setLocation(float x, float y){
+    position.setLocation(x + mainCamera.getXOffset(), y + mainCamera.getYOffset());
+    if(shape != null){
+      shape = new Rectangle2D.Double(x - 10f, y - 10f , 20f, 20f);
+      bounds = shape.getBounds2D();
     }
-    else
-      g.drawRect(0, 0, size.width, size.height);
   }
 
-  //TODO: IMPLEMENTAR A CLASSE E INTERFACE DE SCRIPT
-  
+  public void move(float dx, float dy){
+    position.setLocation(position.getX() + dx, position.getY() + dy);
+    if(shape != null){
+      shape = new Rectangle2D.Double(position.getX() - bounds.getWidth()/2, position.getY() - bounds.getHeight()/2, bounds.getWidth(), bounds.getHeight());
+      bounds = shape.getBounds2D();
+    }
+  }
+
+
+  public void renderGO(Graphics2D g2d){
+    if(shape != null){
+      at = AffineTransform.getRotateInstance(Math.toRadians(rotation), position.getX(), position.getY());
+    	g2d.draw(at.createTransformedShape(shape));
+    }
+  }
 }

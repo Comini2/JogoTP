@@ -3,19 +3,17 @@ import java.util.LinkedList;
 class UpdateThread extends Thread{
 
 	private static LinkedList<SimpleConduct> sCs = new LinkedList<>();
-	private static JGameObjectRenderer renderer;
+	private static Screen screen;
 
-	public UpdateThread(JGameObjectRenderer renderer){
-		this.renderer = renderer;
+	UpdateThread(Screen screen){
+		this.screen = screen;
 	}
 
 	public void run() {
-		for(SimpleConduct sC : sCs)
-	    		sC.start();
-
-	    renderer.prepareWindow();
-	    renderer.start();
-
+		Conduct[] components;
+		for(SimpleConduct sC : sCs){
+			sC.start();
+		}
 	    long lastTime = System.nanoTime();
 	    final double clock = 1000000000.0 / 60.0;
 	    double delta = 0;
@@ -29,10 +27,11 @@ class UpdateThread extends Thread{
 	            for(SimpleConduct sC : sCs)
 	    			sC.update();
 	        }
+	        screen.repaint();
 	    }
 	}
 
-	public static void addConduct(SimpleConduct sc){
+	public static void addSimpleConduct(SimpleConduct sc){
 		sCs.add(sc);
 	}
 }
