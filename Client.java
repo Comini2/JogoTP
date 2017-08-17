@@ -39,7 +39,7 @@ class Client implements Runnable, KeyListener{
 		for(int i = 0; i<zombie.length; i++)
 			zombie[i] = new Zombie();
 		
-		socket = new Socket("localhost", 7777);
+		socket = new Socket("192.168.173.1", 7777);
 		in = new DataInputStream(socket.getInputStream());
 		id = in.readInt();
 		remoteId = id == 0 ? 1 : 0;
